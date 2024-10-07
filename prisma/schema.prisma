@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  jti       String   @unique
+  userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  walletAddress    String             @map("wallet_address")
+  telegramId       String?            @unique
+  tonWallet        String?            @unique
+  evmAddress       String?            @unique
+  gold             Int                @default(0)
+  createdBy        String?            @map("created_by")
+  updatedBy        String?            @map("updated_by")
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @updatedAt @map("updated_at")
+  deletedAt        DateTime?          @map("deleted_at")
+  CompletedMission CompletedMission[]
+  RefreshToken     RefreshToken[]
+
+  @@map("users")
+}
+
+model Mission {
+  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type             MissionType        @default(ONE_TIME) @map("type")
+  socialTask       SocialTask         @default(NORMAL) @map("social_task")
+  title            String             @map("title")
+  image            String?            @map("image")
+  gold             Int                @map("gold")
+  cooldown         Int                @map("cooldown")
+  createdBy        String             @default("system") @map("created_by")
+  updatedBy        String             @default("system") @map("updated_by")
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @updatedAt @map("updated_at")
+  deletedAt        DateTime?          @map("deleted_at")
+  CompletedMission CompletedMission[]
+
+  @@map("missions")
+}
+
+model CompletedMission {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String    @db.Uuid
+  missionId String    @db.Uuid
+  gold      Int
+  createdBy String    @default("system") @map("created_by")
+  updatedBy String    @default("system") @map("updated_by")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  mission   Mission   @relation(fields: [missionId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+
+  @@map("completed_missions")
+}
+
+enum MissionType {
+  ONBOARDING
+  RECURSIVE
+  ONE_TIME
+}
+
+enum SocialTask {
+  NORMAL
+  REQUIRED
+}

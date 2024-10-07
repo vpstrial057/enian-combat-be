@@ -1,0 +1,5 @@
+npm run lint
+npm run build
+
+# Uncomment the line below if you want to run tests as well
+# npm run test
