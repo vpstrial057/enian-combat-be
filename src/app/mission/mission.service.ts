@@ -14,6 +14,7 @@ export class MissionService {
 
     const [missions, total] = await Promise.all([
       this.prisma.mission.findMany({
+        where: { type: query.type },
         skip: skip,
         take: perPage,
         orderBy: { createdAt: 'desc' },

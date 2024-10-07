@@ -21,7 +21,11 @@ describe('MissionController', () => {
 
   describe('Get mission', () => {
     it('should call missionService.list with the provided query', async () => {
-      const query: ListMissionQueryDto = { page: 1, perPage: 10 };
+      const query: ListMissionQueryDto = {
+        type: 'ONBOARDING',
+        page: 1,
+        perPage: 10,
+      };
       const mockPaginatedResponse: PaginatedMissionResponseDto = {
         missions: [],
         meta: { total: 0, page: 1, perPage: 10, totalPages: 1 },
