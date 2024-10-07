@@ -1,45 +1,38 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { MissionController } from './mission.controller';
 import { MissionService } from './mission.service';
+import { ListMissionQueryDto } from './dto/list-mission-query.dto';
+import { PaginatedMissionResponseDto } from './dto/paginated-mission-response.dto';
 
 describe('MissionController', () => {
   let controller: MissionController;
-  let missionService: MissionService;
+  let missionService: jest.Mocked<MissionService>;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [MissionController],
-      providers: [
-        {
-          provide: MissionService,
-          useValue: {
-            list: jest.fn().mockResolvedValue({
-              data: [],
-              meta: {
-                total: 0,
-                lastPage: 1,
-                currentPage: 1,
-                perPage: 10,
-                prev: null,
-                next: null,
-              },
-            }),
-          },
-        },
-      ],
-    }).compile();
+  beforeEach(() => {
+    missionService = {
+      list: jest.fn(),
+    } as unknown as jest.Mocked<MissionService>;
 
-    controller = module.get<MissionController>(MissionController);
-    missionService = module.get<MissionService>(MissionService);
+    controller = new MissionController(missionService);
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should call missionService.list when available is called', async () => {
-    const query = { page: 1, perPage: 10 };
-    await controller.missions(query);
-    expect(missionService.list).toHaveBeenCalledWith(query);
+  describe('Get mission', () => {
+    it('should call missionService.list with the provided query', async () => {
+      const query: ListMissionQueryDto = { page: 1, perPage: 10 };
+      const mockPaginatedResponse: PaginatedMissionResponseDto = {
+        missions: [],
+        meta: { total: 0, page: 1, perPage: 10, totalPages: 1 },
+      };
+
+      missionService.list.mockResolvedValue(mockPaginatedResponse);
+
+      const result = await controller.missions(query);
+
+      expect(missionService.list).toHaveBeenCalledWith(query);
+      expect(result).toEqual(mockPaginatedResponse);
+    });
   });
 });
