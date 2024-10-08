@@ -48,6 +48,7 @@ model Mission {
   createdAt        DateTime           @default(now()) @map("created_at")
   updatedAt        DateTime           @updatedAt @map("updated_at")
   deletedAt        DateTime?          @map("deleted_at")
+  url              String?            @map("url")
   CompletedMission CompletedMission[]
 
   @@map("missions")
