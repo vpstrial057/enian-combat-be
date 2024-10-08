@@ -14,6 +14,9 @@ export class MissionResponseDto {
   title: string = '';
 
   @ApiProperty()
+  url: string | null = null;
+
+  @ApiProperty()
   image: string | null = null;
 
   @ApiProperty()

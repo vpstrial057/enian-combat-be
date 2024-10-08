@@ -28,6 +28,7 @@ export class MissionService {
         type: mission.type,
         socialTask: mission.socialTask,
         title: mission.title,
+        url: mission.url,
         image: mission.image,
         gold: mission.gold,
         cooldown: mission.cooldown,
