@@ -40,14 +40,14 @@ describe('MissionController', () => {
         meta: { total: 0, page: 1, perPage: 10, totalPages: 1 },
       };
       const mockUser: UserResponseDto = {
-        id: 'test-uuid',
+        id: '3136aa1a-fec8-11de-a55f-00003925d394',
         walletAddress: 'test-wallet-address',
         telegramId: 'test-telegram-id',
         tonWallet: 'test-ton-wallet',
         evmAddress: 'test-evm-address',
         gold: 100,
-        createdBy: 'test-creator',
-        updatedBy: 'test-updater',
+        createdBy: 'Seeder',
+        updatedBy: 'Seeder',
         createdAt: new Date(),
         updatedAt: new Date(),
         deletedAt: null,
@@ -61,7 +61,11 @@ describe('MissionController', () => {
       );
       const result = await controller.missions(user, query);
 
-      expect(missionService.list).toHaveBeenCalledWith(user, query);
+      expect(userService.getUserById).toHaveBeenCalledWith(
+        '3136aa1a-fec8-11de-a55f-00003925d394',
+      );
+      expect(user).toEqual(mockUser);
+      expect(missionService.list).toHaveBeenCalledWith(user.id, query);
       expect(result).toEqual(mockPaginatedResponse);
     });
   });
