@@ -15,6 +15,9 @@ import {
 import { MissionService } from './mission.service';
 import { ListMissionQueryDto } from './dto/list-mission-query.dto';
 import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
+import { GetUser } from '@/auth/decorators/get-user.decorator';
+import { User } from '@prisma/client';
+import { PaginatedMissionResponseDto } from './dto/paginated-mission-response.dto';
 
 @ApiTags('Mission')
 @Controller('missions')
@@ -31,7 +34,10 @@ export class MissionController {
     description: 'Missions retrieved successfully',
   })
   @ApiResponse({ status: 400, description: 'Unable to retrieve missions list' })
-  async missions(@Query() query: ListMissionQueryDto) {
-    return await this.missionService.list(query);
+  async missions(
+    @GetUser() user: User,
+    @Query() query: ListMissionQueryDto,
+  ): Promise<PaginatedMissionResponseDto> {
+    return await this.missionService.list(user.id, query);
   }
 }

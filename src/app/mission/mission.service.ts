@@ -8,16 +8,24 @@ import { MissionResponseDto } from './dto/mission-response.dto';
 export class MissionService {
   constructor(private prisma: PrismaService) {}
 
-  async list(query: ListMissionQueryDto): Promise<PaginatedMissionResponseDto> {
+  async list(
+    userId: string,
+    query: ListMissionQueryDto,
+  ): Promise<PaginatedMissionResponseDto> {
     const { page = 1, perPage = 10 } = query;
     const skip = (page - 1) * perPage;
 
-    const [missions, total] = await Promise.all([
+    const [missions, completedMissions, total] = await Promise.all([
       this.prisma.mission.findMany({
         where: { type: query.type },
         skip: skip,
         take: perPage,
         orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.completedMission.findMany({
+        where: { userId: userId },
+        skip: skip,
+        take: perPage,
       }),
       this.prisma.mission.count(),
     ]);
@@ -32,6 +40,7 @@ export class MissionService {
         image: mission.image,
         gold: mission.gold,
         cooldown: mission.cooldown,
+        isComplete: false,
         createdAt: mission.createdAt,
         updatedAt: mission.updatedAt,
         createdBy: mission.updatedBy,
@@ -39,6 +48,14 @@ export class MissionService {
         deletedAt: mission.deletedAt,
       }),
     );
+
+    missionResponseDto.forEach((mission) => {
+      completedMissions.forEach((completedMission) => {
+        if (mission.id == completedMission.missionId) {
+          mission.isComplete = true;
+        }
+      });
+    });
 
     return {
       missions: missionResponseDto,

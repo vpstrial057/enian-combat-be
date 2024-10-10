@@ -26,6 +26,9 @@ export class MissionResponseDto {
   cooldown: number = 0;
 
   @ApiProperty()
+  isComplete: boolean = false;
+
+  @ApiProperty()
   createdAt: Date = new Date();
 
   @ApiProperty()
