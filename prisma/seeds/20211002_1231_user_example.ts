@@ -7,10 +7,6 @@ export async function run(): Promise<void> {
   await prisma.user.createMany({ data: generateUsers(5) });
 }
 
-export async function clearUsers(): Promise<void> {
-  await prisma.user.deleteMany()
-}
-
 function generateUsers(count: number): Array<{
   walletAddress: string;
   telegramId: string;
@@ -37,19 +33,3 @@ function generateUsers(count: number): Array<{
 
   return users;
 }
-
-async function seed(): Promise<void> {
-  await prisma.mission.deleteMany()
-  await prisma.user.deleteMany()
-  // await clearUsers()
-  await run()
-}
-
-seed().catch((error: unknown) => {
-  if (error instanceof Error) {
-    console.error(error.message);
-  } else {
-    console.error('Unknown error occurred during seeding');
-  }
-  process.exit(1);
-});
