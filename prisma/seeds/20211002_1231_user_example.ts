@@ -23,11 +23,11 @@ function generateUsers(count: number): Array<{
     if (index === 0) {
       users.push({
         id: '3136aa1a-fec8-11de-a55f-00003925d394',
-        walletAddress: faker.string.hexadecimal({ length: 16, prefix: '0x' }),
-        telegramId: 'test-telegramid',
-        tonWallet: faker.string.hexadecimal({ length: 16, prefix: 'TON', casing: 'upper' }),
-        evmAddress: faker.string.hexadecimal({ length: 16, prefix: '0x' }),
-        gold: Math.floor(Math.random() * 1000),
+        walletAddress: 'test-wallet-address',
+        telegramId: 'test-telegram-id',
+        tonWallet: 'test-ton-wallet',
+        evmAddress: 'test-evm-address',
+        gold: 100,
         createdBy: 'Seeder',
         updatedBy: 'Seeder',
       })
