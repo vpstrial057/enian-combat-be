@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { faker } from '@faker-js/faker'
+import { randomUUID } from 'crypto';
 
 const prisma = new PrismaClient();
 
@@ -19,16 +20,28 @@ function generateUsers(count: number): Array<{
   const users = [];
 
   for (let index = 0; index < count; index++) {
-    const timestamp = Date.now();
-    users.push({
-      walletAddress: faker.string.hexadecimal({ length: 16, prefix: '0x' }),
-      telegramId: faker.string.numeric(10),
-      tonWallet: faker.string.hexadecimal({ length: 16, prefix: 'TON', casing: 'upper' }),
-      evmAddress: faker.string.hexadecimal({ length: 16, prefix: '0x' }),
-      gold: Math.floor(Math.random() * 1000),
-      createdBy: 'Seeder',
-      updatedBy: 'Seeder',
-    });
+    if (index === 0) {
+      users.push({
+        id: '3136aa1a-fec8-11de-a55f-00003925d394',
+        walletAddress: faker.string.hexadecimal({ length: 16, prefix: '0x' }),
+        telegramId: 'test-telegramid',
+        tonWallet: faker.string.hexadecimal({ length: 16, prefix: 'TON', casing: 'upper' }),
+        evmAddress: faker.string.hexadecimal({ length: 16, prefix: '0x' }),
+        gold: Math.floor(Math.random() * 1000),
+        createdBy: 'Seeder',
+        updatedBy: 'Seeder',
+      })
+    } else {
+      users.push({
+        walletAddress: faker.string.hexadecimal({ length: 16, prefix: '0x' }),
+        telegramId: faker.string.numeric(10),
+        tonWallet: faker.string.hexadecimal({ length: 16, prefix: 'TON', casing: 'upper' }),
+        evmAddress: faker.string.hexadecimal({ length: 16, prefix: '0x' }),
+        gold: Math.floor(Math.random() * 1000),
+        createdBy: 'Seeder',
+        updatedBy: 'Seeder',
+      });
+    }
   }
 
   return users;
