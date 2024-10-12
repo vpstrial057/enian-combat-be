@@ -18,7 +18,6 @@ jest.mock('@/commons/paginator.common', () => ({
 
 describe('MissionService', () => {
   let service: MissionService;
-  let prismaService: PrismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -37,7 +36,6 @@ describe('MissionService', () => {
     }).compile();
 
     service = module.get<MissionService>(MissionService);
-    prismaService = module.get<PrismaService>(PrismaService);
   });
 
   it('should be defined', () => {

@@ -12,14 +12,14 @@ model RefreshToken {
   token     String   @unique
   jti       String   @unique
   userId    String   @db.Uuid
-  user      User     @relation(fields: [userId], references: [id])
   expiresAt DateTime
   createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model User {
   id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  walletAddress    String             @map("wallet_address")
+  walletAddress    String             @unique @map("wallet_address")
   telegramId       String?            @unique
   tonWallet        String?            @unique
   evmAddress       String?            @unique
@@ -29,8 +29,8 @@ model User {
   createdAt        DateTime           @default(now()) @map("created_at")
   updatedAt        DateTime           @updatedAt @map("updated_at")
   deletedAt        DateTime?          @map("deleted_at")
-  CompletedMission CompletedMission[]
   RefreshToken     RefreshToken[]
+  CompletedMission CompletedMission[]
 
   @@map("users")
 }
@@ -48,6 +48,7 @@ model Mission {
   createdAt        DateTime           @default(now()) @map("created_at")
   updatedAt        DateTime           @updatedAt @map("updated_at")
   deletedAt        DateTime?          @map("deleted_at")
+  url              String?            @map("url")
   CompletedMission CompletedMission[]
 
   @@map("missions")
