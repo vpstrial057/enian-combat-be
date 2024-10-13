@@ -45,6 +45,7 @@ export class MissionService {
         updatedAt: mission.updatedAt,
         createdBy: mission.updatedBy,
         updatedBy: mission.updatedBy,
+        lastCompletedAt: null,
         deletedAt: mission.deletedAt,
       }),
     );
@@ -53,6 +54,7 @@ export class MissionService {
       completedMissions.forEach((completedMission) => {
         if (mission.id == completedMission.missionId) {
           mission.isComplete = true;
+          mission.lastCompletedAt = completedMission.createdAt;
         }
       });
     });
