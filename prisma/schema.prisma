@@ -7,29 +7,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model RefreshToken {
-  id        String   @id @default(uuid())
-  token     String   @unique
-  jti       String   @unique
-  userId    String   @db.Uuid
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
-}
-
 model User {
   id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  walletAddress    String             @unique @map("wallet_address")
-  telegramId       String?            @unique
-  tonWallet        String?            @unique
-  evmAddress       String?            @unique
+  telegramId       String?            @unique @map("telegram_id")
+  tonAddress       String?            @unique @map("ton_address")
+  evmAddress       String?            @unique @map("evm_address")
   gold             Int                @default(0)
+  gem              Int                @default(0)
+  finishOnboarding Boolean            @default(false) @map("finish_onboarding")
   createdBy        String?            @map("created_by")
   updatedBy        String?            @map("updated_by")
   createdAt        DateTime           @default(now()) @map("created_at")
   updatedAt        DateTime           @updatedAt @map("updated_at")
   deletedAt        DateTime?          @map("deleted_at")
-  RefreshToken     RefreshToken[]
   CompletedMission CompletedMission[]
 
   @@map("users")

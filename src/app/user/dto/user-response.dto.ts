@@ -4,14 +4,11 @@ export class UserResponseDto {
   @ApiProperty()
   id: string = '';
 
-  @ApiProperty()
-  walletAddress: string = '';
-
   @ApiProperty({ nullable: true })
   telegramId: string | null = null;
 
   @ApiProperty({ nullable: true })
-  tonWallet: string | null = null;
+  tonAddress: string | null = null;
 
   @ApiProperty({ nullable: true })
   evmAddress: string | null = null;
