@@ -5,7 +5,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UserModule } from '../app/user/user.module';
-import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtAuthGuard } from './guards/auth.guard';
 import { RegisterGuard } from './guards/register.guard';
 
@@ -24,7 +23,7 @@ import { RegisterGuard } from './guards/register.guard';
       inject: [ConfigService],
     }),
   ],
-  providers: [AuthService, JwtStrategy, JwtAuthGuard, RegisterGuard],
+  providers: [AuthService, JwtAuthGuard, RegisterGuard],
   controllers: [AuthController],
   exports: [AuthService, JwtAuthGuard, JwtModule],
 })

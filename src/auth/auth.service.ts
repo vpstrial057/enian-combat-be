@@ -1,21 +1,13 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { UserService } from '@/app/user/user.service';
-import { LoginResponseDto } from './dto/login-response.dto';
 import { UserResponseDto } from '@/app/user/dto/user-response.dto';
 import { RegisterDto } from './dto/register.dto';
 import { User } from '@prisma/client';
-import { PrismaService } from '@/shared/prisma/prisma.service';
-import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
 
-  constructor(
-    private userService: UserService,
-    private jwtService: JwtService,
-    private prisma: PrismaService,
-  ) {}
+  constructor(private userService: UserService) {}
 
   async register(
     registerDto: RegisterDto,

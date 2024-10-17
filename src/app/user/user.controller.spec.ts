@@ -109,7 +109,7 @@ describe('UserController', () => {
         deletedAt: null,
       };
       const updateWalletDto: UpdateWalletDto = {
-        tonWallet: 'new-ton-wallet',
+        tonAddress: 'new-ton-wallet',
         evmAddress: 'new-evm-address',
       };
       const updatedUser: UserResponseDto = { ...mockUser, ...updateWalletDto };
