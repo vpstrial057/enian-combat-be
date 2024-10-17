@@ -20,7 +20,7 @@ export class RegisterDto {
   @IsOptional()
   @IsString()
   @Length(1, 255)
-  tonWallet?: string;
+  tonAddress?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()

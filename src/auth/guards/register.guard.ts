@@ -29,7 +29,7 @@ export class RegisterGuard implements CanActivate {
         secret: process.env.JWT_SECRET,
       });
 
-      checkTokenExpiry(payload.iat);
+      checkTokenExpiry(payload);
 
       if (!payload.telegramId) {
         throw new UnauthorizedException(
@@ -53,13 +53,7 @@ export class RegisterGuard implements CanActivate {
       request['user'] = payload;
       return true;
     } catch (error: any) {
-      if (error.name === 'TokenExpiredError') {
-        this.logger.error(`Token expired: ${error.message}`);
-        throw new UnauthorizedException('Token has expired');
-      } else {
-        this.logger.error(`JWT Verification failed: ${error.message}`);
-        throw new UnauthorizedException('Invalid token');
-      }
+      throw error;
     }
   }
 }

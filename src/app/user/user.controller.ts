@@ -17,7 +17,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { UserService } from './user.service';
-import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '@/auth/guards/auth.guard';
 import { GetUser } from '@/auth/decorators/get-user.decorator';
 import { User } from '@prisma/client';
 import { UpdateWalletDto } from './dto/update-wallet.dto';

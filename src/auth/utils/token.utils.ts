@@ -1,12 +1,13 @@
 import { UnauthorizedException } from '@nestjs/common';
 
-export function checkTokenExpiry(iat: number, maxAgeInSeconds = 300): void {
-  const currentTime = Math.floor(Date.now() / 1000);
-  if (!iat) {
-    throw new UnauthorizedException('Invalid token: No issue time (iat) found');
-  }
-  if (currentTime - iat > maxAgeInSeconds) {
-    throw new UnauthorizedException('Token has expired (older than 5 minutes)');
+export function checkTokenExpiry(payload: any): void {
+  const now = Date.now();
+  const issuedTime = payload?.iss * 1000;
+  const expiredTime = payload?.exp * 1000;
+  const prev5min = now - 5 * 60 * 1000; // 5 minutes
+  const next5Min = now + 5 * 60 * 1000; // 5 minutes
+  if (expiredTime <= now || expiredTime >= next5Min || issuedTime <= prev5min) {
+    throw new UnauthorizedException('Invalid token expiration');
   }
 }
 

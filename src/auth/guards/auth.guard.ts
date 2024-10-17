@@ -1,38 +1,24 @@
 import {
-  Injectable,
+  CanActivate,
   ExecutionContext,
+  Injectable,
   UnauthorizedException,
-  Scope,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../../app/user/user.service';
-import { Reflector } from '@nestjs/core';
 import { checkTokenExpiry, extractTokenFromHeader } from '../utils/token.utils';
 import { Logger } from '@nestjs/common';
 
-@Injectable({ scope: Scope.REQUEST })
-export class JwtAuthGuard extends AuthGuard('jwt') {
+@Injectable()
+export class JwtAuthGuard implements CanActivate {
   private readonly logger = new Logger(JwtAuthGuard.name);
 
   constructor(
     private jwtService: JwtService,
     private userService: UserService,
-    private reflector: Reflector,
-  ) {
-    super();
-  }
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const isPublic = this.reflector.getAllAndOverride<boolean>('isPublic', [
-      context.getHandler(),
-      context.getClass(),
-    ]);
-
-    if (isPublic) {
-      return true;
-    }
-
     const request = context.switchToHttp().getRequest();
     const token = extractTokenFromHeader(request.headers);
 
@@ -45,8 +31,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         secret: process.env.JWT_SECRET,
       });
 
-      // console.log(`Payload IAT: ${payload.iat}`);
-      checkTokenExpiry(payload.iat);
+      checkTokenExpiry(payload);
       this.validatePayload(payload);
       const user = await this.verifyUser(payload);
       request['user'] = user;
@@ -70,10 +55,10 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   private async verifyUser(payload: any) {
-    this.logger.log(`Validating JWT token for user ${payload.sub}`);
-    const user = await this.userService.findById(payload.sub);
-    if (!user || user.id !== payload.sub) {
-      this.logger.warn(`User not found: ${payload.sub}`);
+    this.logger.log(`Validating JWT token for user ${payload.telegramId}`);
+    const user = await this.userService.findById(payload.telegramId);
+    if (!user || user.id !== payload.telegramId) {
+      this.logger.warn(`User not found: ${payload.telegramId}`);
       throw new UnauthorizedException('User not found or invalid');
     }
     return user;
