@@ -14,7 +14,7 @@ import {
 } from '@nestjs/swagger';
 import { MissionService } from './mission.service';
 import { ListMissionQueryDto } from './dto/list-mission-query.dto';
-import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '@/auth/guards/auth.guard';
 import { GetUser } from '@/auth/decorators/get-user.decorator';
 import { User } from '@prisma/client';
 import { PaginatedMissionResponseDto } from './dto/paginated-mission-response.dto';
