@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ListMissionQueryDto } from './dto/list-mission-query.dto';
 import { PaginatedMissionResponseDto } from './dto/paginated-mission-response.dto';
 import { MissionResponseDto } from './dto/mission-response.dto';
+import { MissionType, SocialTask } from '@prisma/client';
 
 @Injectable()
 export class MissionService {
@@ -68,5 +69,61 @@ export class MissionService {
         totalPages: Math.ceil(total / perPage),
       },
     };
+  }
+
+  async complete(userId: string, missionId: string): Promise<void> {
+    const mission = await this.prisma.mission.findFirst({
+      where: { id: missionId },
+    });
+
+    const completedMission = await this.prisma.completedMission.findFirst({
+      where: { userId: userId, missionId: missionId },
+    });
+
+    if (mission?.type == MissionType.ONE_TIME && completedMission) {
+      throw new Error('Mission already completed.');
+    }
+
+    const timeDiff: number =
+      Date.now() -
+      Date.parse(
+        completedMission?.createdAt.toISOString() ?? Date.now().toString(),
+      );
+
+    if (timeDiff / (1000 * 60 * 60) <= 8) {
+      throw new Error('Mission is still in cooldown');
+    }
+
+    if (mission?.socialTask == SocialTask.REQUIRED) {
+      const isVerified = await this.verify(userId, missionId);
+      if (isVerified) {
+        await this.prisma.completedMission.create({
+          data: {
+            missionId: missionId,
+            userId: userId,
+            gold: mission.gold,
+            createdBy: userId,
+          },
+        });
+        return;
+      }
+    }
+
+    await this.prisma.completedMission.create({
+      data: {
+        missionId: missionId,
+        userId: userId,
+        gold: mission?.gold ?? 0,
+        createdBy: userId,
+      },
+    });
+  }
+
+  async verify(userId: string, missionId: string): Promise<boolean> {
+    const mission = await this.prisma.mission.findFirst({
+      where: { id: missionId },
+    });
+
+    return true;
   }
 }
