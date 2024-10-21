@@ -40,6 +40,9 @@ export class MissionResponseDto {
   @ApiProperty()
   updatedBy: string | null = null;
 
+  @ApiProperty()
+  lastCompletedAt?: Date | null = null;
+
   @ApiProperty({ nullable: true })
   deletedAt: Date | null = null;
 }

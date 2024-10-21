@@ -62,7 +62,7 @@ export class UserService {
       user = await this.prisma.user.create({
         data: {
           telegramId,
-          walletAddress: `0x${telegramId}`, // Placeholder wallet address
+          tonAddress: `0x${telegramId}`, // Placeholder wallet address
         },
       });
     }
@@ -74,11 +74,11 @@ export class UserService {
     userId: string,
     updateWalletDto: UpdateWalletDto,
   ): Promise<User> {
-    const { tonWallet, evmAddress } = updateWalletDto;
+    const { tonAddress: tonAddress, evmAddress } = updateWalletDto;
 
-    if (tonWallet) {
+    if (tonAddress) {
       const existingTonUser = await this.prisma.user.findFirst({
-        where: { tonWallet },
+        where: { tonAddress },
       });
       if (existingTonUser && existingTonUser.id !== userId) {
         throw new ConflictException(
@@ -100,7 +100,7 @@ export class UserService {
 
     return this.prisma.user.update({
       where: { id: userId },
-      data: { tonWallet, evmAddress },
+      data: { tonAddress, evmAddress },
     });
   }
 
@@ -119,9 +119,8 @@ export class UserService {
 
     const userResponseDtos: UserResponseDto[] = users.map((user) => ({
       id: user.id,
-      walletAddress: user.walletAddress,
       telegramId: user.telegramId,
-      tonWallet: user.tonWallet,
+      tonAddress: user.tonAddress,
       evmAddress: user.evmAddress,
       gold: user.gold,
       createdAt: user.createdAt,
@@ -153,9 +152,8 @@ export class UserService {
   private mapToUserResponseDto(user: User): UserResponseDto {
     return {
       id: user.id,
-      walletAddress: user.walletAddress,
       telegramId: user.telegramId,
-      tonWallet: user.tonWallet,
+      tonAddress: user.tonAddress,
       evmAddress: user.evmAddress,
       gold: user.gold,
       createdAt: user.createdAt,

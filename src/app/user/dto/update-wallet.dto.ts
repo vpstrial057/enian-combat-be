@@ -6,7 +6,7 @@ export class UpdateWalletDto {
   @IsOptional()
   @IsString()
   @Length(1, 255)
-  tonWallet?: string;
+  tonAddress?: string;
 
   @ApiPropertyOptional({ description: 'EVM address' })
   @IsOptional()
