@@ -49,15 +49,18 @@ export class JwtAuthGuard implements CanActivate {
   }
 
   private validatePayload(payload: any) {
-    if (!payload.telegramId || !payload.sub) {
+    if (
+      !payload.telegramId ||
+      !payload.sub ||
+      payload.telegramId !== payload.sub
+    ) {
       throw new UnauthorizedException('Invalid token payload');
     }
   }
 
   private async verifyUser(payload: any) {
-    this.logger.log(`Validating JWT token for user ${payload.telegramId}`);
-    const user = await this.userService.findById(payload.telegramId);
-    if (!user || user.id !== payload.telegramId) {
+    const user = await this.userService.findByTelegramId(payload.telegramId);
+    if (!user) {
       this.logger.warn(`User not found: ${payload.telegramId}`);
       throw new UnauthorizedException('User not found or invalid');
     }

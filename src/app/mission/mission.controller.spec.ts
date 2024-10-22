@@ -4,7 +4,7 @@ import { ListMissionQueryDto } from './dto/list-mission-query.dto';
 import { PaginatedMissionResponseDto } from './dto/paginated-mission-response.dto';
 import { UserController } from '../user/user.controller';
 import { UserService } from '../user/user.service';
-import { UserResponseDto } from '../user/dto/user-response.dto';
+import { User } from '@prisma/client';
 
 describe('MissionController', () => {
   let controller: MissionController;
@@ -39,11 +39,10 @@ describe('MissionController', () => {
         missions: [],
         meta: { total: 0, page: 1, perPage: 10, totalPages: 1 },
       };
-      const mockUser: UserResponseDto = {
+      const mockUser: User = {
         id: '3136aa1a-fec8-11de-a55f-00003925d394',
-        walletAddress: 'test-wallet-address',
         telegramId: 'test-telegram-id',
-        tonWallet: 'test-ton-wallet',
+        tonAddress: 'test-ton-wallet',
         evmAddress: 'test-evm-address',
         gold: 100,
         createdBy: 'Seeder',
@@ -51,12 +50,14 @@ describe('MissionController', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         deletedAt: null,
+        gem: 0,
+        finishOnboarding: false,
       };
 
       missionService.list.mockResolvedValue(mockPaginatedResponse);
       userService.getUserById.mockResolvedValue(mockUser);
 
-      const user = await userController.getUserById(
+      const user = await userService.getUserById(
         '3136aa1a-fec8-11de-a55f-00003925d394',
       );
       const result = await controller.missions(user, query);
