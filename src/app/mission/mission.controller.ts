@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -24,31 +15,27 @@ import { CompleteMissionBodyDto } from './dto/complete-mission-query.dto';
 
 @ApiTags('Mission')
 @Controller('missions')
-// @UseGuards(JwtAuthGuard)
-// @ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class MissionController {
   constructor(private readonly missionService: MissionService) {}
 
   @Get()
-  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get missions list' })
   @ApiResponse({
     status: 200,
     description: 'Missions retrieved successfully',
+    type: PaginatedMissionResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Unable to retrieve missions list' })
   async missions(
     @GetUser() user: User,
     @Query() query: ListMissionQueryDto,
   ): Promise<PaginatedMissionResponseDto> {
-    return await this.missionService.list(
-      '3136aa1a-fec8-11de-a55f-00003925d394',
-      query,
-    );
+    return await this.missionService.list(user.id, query);
   }
 
   @Post('/complete')
-  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Complete the mission' })
   @ApiResponse({
     status: 200,
@@ -59,9 +46,6 @@ export class MissionController {
     @GetUser() user: User,
     @Body() body: CompleteMissionBodyDto,
   ): Promise<void> {
-    return await this.missionService.complete(
-      '3136aa1a-fec8-11de-a55f-00003925d394',
-      body.missionId,
-    );
+    return await this.missionService.complete(user.id, body.missionId);
   }
 }
