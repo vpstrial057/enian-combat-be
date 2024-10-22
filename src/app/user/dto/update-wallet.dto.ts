@@ -1,16 +1,16 @@
-import { IsString, IsOptional, Length } from 'class-validator';
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { WalletType } from '@/constants/wallet.constants';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsEnum, IsString, Length } from 'class-validator';
 
 export class UpdateWalletDto {
-  @ApiPropertyOptional({ description: 'TON wallet address' })
-  @IsOptional()
-  @IsString()
-  @Length(1, 255)
-  tonAddress?: string;
+  @ApiProperty({ description: 'Address Type' })
+  @IsNotEmpty()
+  @IsEnum(WalletType)
+  type!: string;
 
-  @ApiPropertyOptional({ description: 'EVM address' })
-  @IsOptional()
+  @ApiProperty({ description: 'Wallet Address' })
+  @IsNotEmpty()
   @IsString()
   @Length(1, 255)
-  evmAddress?: string;
+  walletAddress!: string;
 }
