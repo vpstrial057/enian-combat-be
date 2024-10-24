@@ -1,16 +1,23 @@
-import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { OnboardingService } from './onboarding.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { GetUser } from '@/auth/decorators/get-user.decorator';
 import { User } from '@prisma/client';
+import { JwtAuthGuard } from '@/auth/guards/auth.guard';
 
 @ApiTags('Onboarding')
 @Controller('onboarding')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class OnboardingController {
   constructor(private readonly onboardingService: OnboardingService) {}
 
   @Get()
-  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Get onboarding status' })
   @ApiResponse({
     status: 200,
@@ -21,8 +28,6 @@ export class OnboardingController {
     description: 'Unable to retrieve onboarding status',
   })
   async get(@GetUser() user: User): Promise<boolean> {
-    return await this.onboardingService.get(
-      '3136aa1a-fec8-11de-a55f-00003925d394',
-    );
+    return await this.onboardingService.get(user);
   }
 }
