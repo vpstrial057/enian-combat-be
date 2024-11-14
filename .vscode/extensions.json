@@ -1,5 +1,8 @@
 {
     "recommendations": [
-        "aarondill.vercel-project-manager-vscode"
+        "aarondill.vercel-project-manager-vscode",
+        "ms-vscode.cpptools",
+        "ms-python.debugpy",
+        "ms-vscode.cmake-tools"
     ]
 }
